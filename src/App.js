@@ -8,6 +8,8 @@ import Contact from './contact';
 import About from './about';
 import Materials from './products/materials';
 import ProductListing from './products/productlisting';
+import PrivateRoute from "./privateRoute";
+
 
 function App(){
   return(
@@ -19,11 +21,15 @@ function App(){
         <Route path="/confirm" element={<MailConfirmation/>}></Route>
         <Route path="/contact" element={<Contact/>}></Route>
         <Route path="/about" element={<About/>}></Route>
-        <Route path="/materials" element={<Materials/>}></Route>
+        <Route path="/materials" element={
+          <PrivateRoute>
+            <Materials/>
+          </PrivateRoute>}
+        />
         <Route path="/ProductListing" element={<ProductListing />}></Route>
       </Routes>
     </BrowserRouter>
-        
+     
   );
 }
 
