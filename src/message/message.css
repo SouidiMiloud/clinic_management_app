@@ -1,0 +1,135 @@
+.msg_container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.msg_wrapper{
+    width: 28rem;
+    position: relative;
+    top: 4.5rem;
+}
+
+.msg_header{
+    height: 3rem;
+    background-color: #CCC;
+    font-size: 24px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1.3px solid #000;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border-bottom: none;
+}
+.msg_header img{
+    width: 2.7rem;
+    height: 2.7rem;
+    margin-left: 0.2rem;
+    margin-right: 0.5rem;
+    border-radius: 25px;
+}
+.msg_header h5{
+    
+}
+
+.msg_body{
+    height: 25rem;
+    background-color: #fff;
+    border-left: 1.3px solid #000;
+    border-right: 1.3px solid #000;
+    overflow-y: scroll;
+}
+.msg_body::-webkit-scrollbar{
+    width: 0.4rem;
+    background-color: #ccc;
+}
+.msg_body::-webkit-scrollbar-thumb{
+    background-color: #888;
+    border-radius: 1rem;
+}
+.msg_body::-webkit-scrollbar-thumb:hover{
+    background-color: #666;
+}
+
+.msg_bottom{
+    height: 3.2rem;
+    background-color: #eee;
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    border: 1.3px solid #000;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+.msg_bottom input{
+    width: 24rem;
+    border-bottom-left-radius: 1rem;
+    border: none;
+    padding-left: 0.7rem;
+    font-size: 19px;
+    outline: none;
+}
+.msg_bottom button{
+    width: 4rem;
+    background-color: #00f;
+    border: none;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    font-size: 20px;
+    color: white;
+}
+.msg_bottom button:hover{
+    cursor: pointer;
+    background-color: #00a;
+}
+
+.msg_content div{
+    display: flex;
+    flex-direction: row;
+}
+
+.msg_content p{
+    margin: 0.2rem 2rem 0.1rem 0.3rem;
+    font-size: 18px;
+    overflow-wrap: break-word;
+    max-width: 90%;
+}
+.msg_out{
+    justify-content: end;
+}
+.msg_out div{
+    position: relative;
+    margin: 1px 3px 2px 3px;
+    border-radius: 5px;
+    background-color: #0f0;
+    max-width: 21rem;
+}
+.msg_in{
+    justify-content: start;
+}
+.msg_in div{
+    position: relative;
+    margin: 1px 3px 2px 3px;
+    border-radius: 5px;
+    max-width: 21rem;
+    background-color: #0ff;
+}
+
+.msg_content span{
+    font-size: 10px;
+    position: absolute;
+    right: 0.2rem;
+    bottom: 0;
+}
+
+.msg_date{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.msg_date p{
+    margin: 0;
+    font-size: 14px;
+}

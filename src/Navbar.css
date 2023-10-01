@@ -1,94 +1,87 @@
-/* styles.css */
-
-/* Navigation styles */
-
-.navbarItems {
-    margin-top: 10px;
-    background-color: #f1f1f1;
-    position: relative;
-    z-index: 1000;
+.custom_nav{
+    width: 100%;
+    height: 3.2em;
+    background-color: #225;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    box-shadow: 0 5px 15px 0 rgba(0, 0, 0, .25);
-    width: 95%;
-    height: 70px;
-    border-radius:13px;
-    
-
+    position: fixed;
+    z-index: 2;
 }
 
-.nav-logo {
-    font-size: 10px;
-    /* Hide the text */
+.nav_btn{
+    width: 9rem;
+    height: 2.5rem;
+    color: white;
+    background-color: #225;
+    border-radius: 17px;
+    border-width: 1.5px;
+    border-color: blue;
+    font-size: 15px;
+}
+.nav_btn:hover{
+    cursor: pointer;
+    background-color: blue;
 }
 
-.nav-logo::after {
-    content: "INPT";
-    /* Set the desired text for the logo */
-    display: inline-block;
-    font-family: 'Brush Script MT', cursive;
-    font-size: 40px;
-    font-weight: bold;
-    color: #333;
-    margin: 0;
-    /* Add any additional styling for the logo */
-}
-
-.menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+.drop_div{
     display: flex;
-}
-
-.menu li {
-    margin-right: 20px;
-    padding: 0 20px 0 0;
-    position: relative;
-}
-
-.menu li a {
-    font-weight: bold;
-    text-decoration: none;
-    color: #333;
-    font-size: 16px;
-    transition: color 0.3s ease;
-}
-
-.menu li a.active ,
-.menu li a:hover {
-    color: rgba(50, 231, 255, 0.8);
-}
-.menu li a.active::after,
-.menu li a:hover::after
-{
-    content:"";
-    width: 30%;
-    height:2px;
-    background: rgba(50, 231, 255, 0.8);
+    flex-direction: column;
     position: absolute;
-    bottom:-4px;
-    left: 0px;
-
-
+}
+.drop_div button{
+    width: 8.5rem;
+    height: 2rem;
+    background-color: #ccf;
+    color: black;
+    font-size: 18px;
+    font-style: italic;
+    margin-bottom: 1px;
+    border: none;
+    border-radius: 5px;
+    
+}
+.drop_div button:hover{
+    background-color: #225;
+    color: white;
+    cursor: pointer;
 }
 
-/* Additional styling for responsiveness */
+.filter_btn{
+    width: 14rem;
+    height: 2.5rem;
+    color: white;
+    background-color: #225;
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: white;
+    font-size: 16px;
+    font-style: italic;
+}
+.filter_btn:hover{
+    cursor: pointer;
+    background-color: blue;
+}
 
-@media (max-width: 768px) {
-    .navbarItems {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .menu {
-        margin-top: 10px;
-    }
-
-    .menu li {
-        margin: 0;
-        margin-bottom: 10px;
-    }
+.drop_filter{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+}
+.drop_filter button{
+    width: 12rem;
+    height: 2rem;
+    background-color: #bbf;
+    color: black;
+    font-size: 18px;
+    font-style: italic;
+    margin-bottom: 1px;
+    border: none;
+    border-radius: 7px;
+    
+}
+.drop_filter button:hover{
+    background-color: #225;
+    color: white;
+    cursor: pointer;
 }

@@ -1,0 +1,56 @@
+.reg_wrapper{
+    width: 50em;
+    height: 33em;
+    border-radius: 15px;
+    background-color: #226;
+    position: relative;
+    top: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.reg_inputField{
+    display: flex;
+    flex-direction: column;
+}
+.reg_inputField input{
+    width: 20rem;
+    height: 3rem;
+    border-radius: 10px;
+    padding-left: 0.5rem;
+    font-size: 20px;
+    box-shadow: 4px 4px 0px 4px rgb(0, 0, 0);
+}
+.reg_inputField label{
+    color: white;
+    font-size: 16px;
+    margin-top: 1.5rem;
+}
+
+.reg_submit_btn{
+    width: 25rem;
+    height: 3rem;
+    border: none;
+    border-radius: 20px;
+    background-color: #2a2;
+    color: white;
+    font-size: 18px;
+    box-shadow: 5px 5px 0px 2px rgba(0, 0, 0);
+    margin-top: 2rem;
+
+    position: absolute;
+    bottom: 1em;
+}
+.reg_submit_btn:hover{
+    background-color: #2c2;
+    cursor: pointer;
+    transform: scale(1.04)
+}
+
+h2{
+    position: absolute;
+    top: 0;
+    color: #bfb;
+    margin-bottom: 40px;
+}

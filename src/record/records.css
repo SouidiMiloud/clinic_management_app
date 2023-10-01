@@ -1,0 +1,25 @@
+.records_wrapper{
+    width: 100%;
+    position: relative;
+    top: 5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.records_wrapper table{
+    width: 95%;
+}
+
+.records_wrapper thead tr{
+    background-color: #bbb;
+}
+
+.records_wrapper th{
+    border: solid 1px #22a;
+}
+
+.records_wrapper tbody td{
+    font-size: 17px;
+    border: dashed 0.1px #22a;
+}

@@ -1,0 +1,107 @@
+.apps_wrapper{
+    width: 100%;
+    position: relative;
+    top: 4.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+table{
+    width: 90%;
+    text-align: center;
+    font-size: 20px;
+    border-collapse: collapse;
+}
+
+thead tr{
+    background-color: #aaa;
+    height: 3rem;
+}
+
+tbody tr{
+    height: 4rem;
+}
+
+tbody tr:nth-child(even){
+    background-color: rgb(225, 225, 225);
+}
+tbody tr:nth-child(odd){
+    background-color: rgb(240, 240, 240);
+}
+
+.status{
+    height: 4rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+.status button{
+    width: 5rem;
+    height: 2.2rem;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+}
+
+.confirm{
+    background-color: #2a2;
+}
+.confirm:hover{
+    background-color: #0e0;
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.reject{
+    background-color: #a22;
+}
+.reject:hover{
+    background-color: #f00;
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.app_contact{
+    background-color: #2aa;
+}
+.app_contact:hover{
+    transform: scale(1.1);
+    background-color: #4bb;
+    cursor: pointer;
+}
+
+.apps_search{
+    margin-bottom: 0.1rem;
+}
+.apps_search input{
+    width: 25rem;
+    height: 40px;
+    outline: none;
+    font-size: 18px;
+    border-bottom-color: blue;
+    border-left-color: blue;
+    border-top-color: blue;
+    padding: 0 0.3rem 0 0.5rem;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-right: none;
+    background-color: #eff;
+}
+.apps_search button{
+    width: 4rem;
+    height: 40px;
+    border-left: none;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 16px;
+    font-size: 18px;
+    background-color: blue;
+    color: white;
+    border-color: blue;
+}
+.apps_search button:hover{
+    cursor: pointer;
+    background-color: #22a;
+}

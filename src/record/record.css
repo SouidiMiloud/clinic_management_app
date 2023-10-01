@@ -1,0 +1,73 @@
+.record_wrapper{
+    background-color: #225;
+    border-radius: 20px;
+    width: 50%;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    position: relative;
+    top: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.record_wrapper div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 80%;
+    height: 3.5rem;
+    position: relative;
+    margin-top: 0.2rem;
+}
+
+.record_wrapper div label{
+    position: absolute;
+    left: 0;
+    font-size: 20px;
+    color: white;
+}
+
+.record_wrapper div input{
+    width: 22rem;
+    height: 3.2rem;
+    position: absolute;
+    right: 0;
+    font-size: 18px;
+    outline: none;
+    border-radius: 10px;
+    border-color: blue;
+    border-width: 0.15rem;   
+    padding-left: 0.4rem;
+}
+
+.record_wrapper textarea{
+    width: 22rem;
+    height: 4.5rem;
+    position: absolute;
+    right: 0;
+    font-size: 18px;
+    outline: none;
+    resize: none;
+    border: solid blue;
+    border-radius: 10px;
+    margin-top: 1.5rem;
+    padding: 0.1rem 0.1rem 0.1rem 0.3rem;
+}
+
+.record_wrapper button{
+    width: 25rem;
+    height: 3rem;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 15px;
+    background-color: blue;
+    color: white;
+    font-size: 20px;
+}
+.record_wrapper button:hover{
+    background-color: #44a;
+    cursor: pointer;
+    transform: scale(1.1);
+}

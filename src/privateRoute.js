@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import {Navigate} from "react-router-dom"
+import React from "react";
+import { Navigate } from "react-router-dom";
 
 
-const PrivateRoute = (({child})=>{
-    //const [jwt, setJwt] = useState('');
+const PrivateRoute = ({children})=>{
+
     const jwt = localStorage.getItem('jwt');
-    return (jwt ? child : <Navigate to="/login"/>);
-});
-
+    return(
+        jwt ? children : <Navigate to='/login'/>
+    );
+}
 export default PrivateRoute;
