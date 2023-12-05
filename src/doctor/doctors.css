@@ -3,29 +3,35 @@
     flex-direction: column;
     align-items: center;
     position: relative;
-    top: 4rem;
+    top: 5rem;
 }
 
 .doctor_grid{
     display: grid;
-    grid-template-columns: repeat(3, 20rem);
-    gap: 10px;
+    grid-template-columns: repeat(3, 18rem);
+    gap: 15px;
 }
 
 .grid_element{
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #225;
+    background-color: #FFFFFF;
+    border: solid #E0E0E0 1px;
     border-radius: 10px;
+    position: relative;
+    box-shadow: 0px 0px 4px 0px rgba(130, 150, 150, 2)
 }
 .grid_element img{
-    width: 15rem;
-    height: 12rem;
+    width: 10rem;
+    height: 10rem;
+    margin-top: 2rem;
+    border-radius: 2rem;
+    left: 0;
 }
 .grid_element p{
     font-size: 18px;
-    color: white;
+    color: #333;
     margin-bottom: 0;
     margin-top: 0.5rem;
 }
@@ -41,14 +47,32 @@
 .interact button{
     width: 7rem;
     height: 2rem;
-    background-color: #225;
-    color: white;
-    border-radius: 13px;
-    border-width: 1.5px;
-    border-color: #4d4;
+    background-color: #36A2EB;
+    color: #333;
+    border: none;
+    border-radius: 0.5rem;
     font-size: 17px;
 }
 .interact button:hover{
-    background-color: #4b4;
     cursor: pointer;
+    background-color: #4DA1FF; 
+    color: #000;
+}
+
+.specialty_div{
+    width: fit-content;
+    height: 2rem;
+    background-color: #2C3E50;
+    position: absolute;
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+    top: 0;
+    right: 0;
+    border-bottom-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+.specialty_div p{
+    color: #fff;
+    font-style: italic;
+    font-size: 14px;
 }

@@ -2,28 +2,34 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: center;
 }
 
 .conv_wrapper{
-    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4.2rem;
+}
+
+.convs{
+    width: 100%;
+    margin-top: -0.5rem;
     display: flex;
     flex-direction: column;
     position: relative;
-    top: 3.5rem;
+    box-shadow: 0.5px 0.5px 4px 0px #355;
 }
 
 .conv_element{
     width: 100%;
-    height: 4rem;
+    height: 4.5rem;
     display: flex;
     flex-direction: row;
-    background-color: #ccc;
+    background-color: #fff;
     position: relative;
-    margin-top: 0.04rem;
 }
 .conv_element:hover{
-    background-color: #aaa;
+    background-color: #F2F2F2;
     cursor: pointer;
 }
 
@@ -53,16 +59,49 @@
 .conv_date{
     position: absolute;
     right: 0.5rem;
-    top: 0.5rem;
+    top: 0.2rem;
 }
 .conv_unread{
     min-width: 2.5rem;
     min-height: 1.5rem;
     position: absolute;
     right: 2rem;
-    bottom: 0.5rem;
+    bottom: 0.8rem;
     background-color: #0f0;
     text-align: center;
     border-radius: 15px;
     font-size: 20px;
+}
+
+.msgs_search{
+    width: fit-content;
+    height: 2.8rem;
+    background-color: #FFF;
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    border: 1px solid #4AA;
+    border-radius: 0.8rem;
+    margin: -0.2rem 0 1rem 0;
+}
+.msgs_search input{
+    width: 24rem;
+    border-radius: 0.8rem;
+    border: none;
+    padding-left: 0.7rem;
+    font-size: 19px;
+    outline: none;
+}
+.msgs_search button{
+    width: 4.5rem;
+    background-color: #007BFF ;
+    border: none;
+    border-bottom-right-radius: 0.8rem;
+    border-top-right-radius: 0.8rem;
+    font-size: 20px;
+    color: #333;
+}
+.msgs_search button:hover{
+    cursor: pointer;
+    background-color: #4DA1FF;
 }

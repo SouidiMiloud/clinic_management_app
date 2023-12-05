@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from '../navbar.js'
 import './record.css'
 import { connectWebSocket } from "../message/wSocket.js";
+import fetchData from "../api.js";
 
 const Record = ({username, notificationsNum, setNotificationsNum})=>{
 
@@ -26,32 +27,21 @@ const Record = ({username, notificationsNum, setNotificationsNum})=>{
     };
 
     useEffect(()=>{
-        fetch('http://localhost:8090/user/getUsername', {
-            headers: {
-                authorization: `Bearer ${localStorage.getItem('jwt')}`
-            },
-            method: 'GET'
-        }).then(response=>{
-            if(response.status === 200)
-                setServerDown(false);
-        }).catch(error=>setServerDown(true));
+        
+        fetchData('/user/getUsername', 'GET')
+        .then(response=>{
+              setServerDown(false);
+      }).catch(error=>setServerDown(true));
+
 
         connectWebSocket(username, setNotificationsNum);
 
     }, []);
 
     const saveRecord = ()=>{
-        fetch(`http://localhost:8090/record/saveRecord?appointmentId=${appointmentId}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                authorization: `Bearer ${localStorage.getItem('jwt')}`
-            },
-            method: 'POST',
-            body: JSON.stringify(record)
-        })
-        .then(response=>{
-            if(response.status === 200)
-                window.location.href = '/newRecord';
+        fetchData(`/record/saveRecord?appointmentId=${appointmentId}`, 'POST', record)
+        .then(data=>{
+          window.location.href = '/newRecord';
         })
         .catch(error=>{setServerDown(true)});
     }
@@ -60,7 +50,7 @@ const Record = ({username, notificationsNum, setNotificationsNum})=>{
       <>
         <Navbar filter={false} notificationsNum={notificationsNum}/>
         {!serverDown && <div className="record_wrapper">
-          <h3 style={{color: 'white'}}>add a new record</h3>
+          <h3 style={{color: '#104F5F'}}>Add a new record</h3>
           <div>
             <label>disease</label>
             <input name="disease" value={record.disease} onChange={updateRecord} placeholder="disease"/>

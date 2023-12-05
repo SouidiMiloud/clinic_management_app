@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import './doctorSignUp.css'
-import ServerDown from "../serverDown";
 
 
 const DoctorSignUp = ()=>{
@@ -49,7 +48,7 @@ const DoctorSignUp = ()=>{
         formData.append('workEnd', info.workEnd);
         formData.append('specialty', info.specialty);
         formData.append('image', imagePath);
-
+        
         fetch('http://localhost:8090/doctor/register', {
             method: 'POST',
             body: formData

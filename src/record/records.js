@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import Navbar from "../navbar";
 import './records.css'
 import { connectWebSocket } from "../message/wSocket";
+import fetchData from "../api";
 
 const Records = ({username, notificationsNum, setNotificationsNum})=>{
 
@@ -10,18 +11,9 @@ const Records = ({username, notificationsNum, setNotificationsNum})=>{
     const [serverDown, setServerDown] = useState(true);
 
     useEffect(()=>{
-      fetch('http://localhost:8090/record/getRecords', {
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${localStorage.getItem('jwt')}`
-        },
-        method: 'GET'
-      }).then(response=>{
-        if(response.status === 200){
-          setServerDown(false);
-          return response.json();
-        }
-      }).then(data=>{
+      fetchData('/record/getRecords', 'GET')
+      .then(data=>{
+        setServerDown(false);
         setRole(data.role);
         setRecords(data.records);
       })

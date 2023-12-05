@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from '../navbar'
 import './appointments.css'
 import { connectWebSocket } from "../message/wSocket";
+import fetchData from "../api";
 
 
 const Appointments = ({username, notificationsNum, setNotificationsNum})=>{
@@ -18,36 +19,17 @@ const Appointments = ({username, notificationsNum, setNotificationsNum})=>{
     }, [notificationsNum]);
 
     const loadAppointments = ()=>{
-      fetch(`http://localhost:8090/user/appointments?username=${usernameSearch}`, {
-        headers: {
-            'Content-Type': 'application/json',
-            authorization: `Bearer ${localStorage.getItem('jwt')}`
-        },
-        method: 'GET',
-      })
-      .then(response=>{
-        if(response.status === 200)
-            return response.json();
-      })
+      fetchData(`/user/appointments?username=${usernameSearch}`, 'GET')
       .then(data=>{
         setAppointments(data.appointments);
         setRole(data.role);
-      }).catch(error=>{})
+      }).catch(error=>{});
     }
 
     const checkAppointment = (appId, decision)=>{
-      fetch('http://localhost:8090/doctor/checkAppointment', {
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${localStorage.getItem('jwt')}`
-        },
-        method: 'POST',
-        body: JSON.stringify({id: appId, decision: decision})
-      })
-      .then(response=>{
-        if(response.status === 200)
-          setNotificationsNum(notificationsNum + 1);
-      })
+
+      fetchData('/doctor/checkAppointment', 'POST', {id: appId, decision: decision})
+      .then(data=>setNotificationsNum(notificationsNum + 1));
     }
 
     return(
@@ -80,19 +62,19 @@ const Appointments = ({username, notificationsNum, setNotificationsNum})=>{
                     <td>{app.description}</td>
                     {(role === 'PATIENT' || app.status === 'REJECTED') && <td
                       style={{width: '17%', fontStyle: 'italic', 
-                        color: (app.status === 'CONFIRMED' ? '#393' : 
-                        (app.status === 'REJECTED' ? '#933' : '#aa0'))}}>
+                        color: (app.status === 'CONFIRMED' ? '#0a5' : 
+                        (app.status === 'REJECTED' ? '#DC3545' : '#444'))}}>
                       {app.status}
                     </td>}
                     {role === 'DOCTOR' && app.status === 'CONFIRMED' &&
                       <td className="status">
-                        <button className="app_contact" onClick={()=>window.location.href=`/newRecord?appId=${app.id}`}>record</button>
+                        <button className="app_contact" onClick={()=>window.location.href=`/newRecord?appId=${app.appointmentId}`}>record</button>
                         <button className="app_contact" onClick={()=>window.location.href=`/message?participantUsername=${app.participantUsername}`}>message</button>
                       </td>}
                     {role === 'DOCTOR' && app.status === 'UNCHECKED' &&
                       <td className="status">
-                        <button className="confirm" onClick={()=>checkAppointment(app.id, 'CONFIRMED')}>confirm</button>
-                        <button className="reject" onClick={()=>checkAppointment(app.id, 'REJECTED')}>reject</button>
+                        <button className="confirm" onClick={()=>checkAppointment(app.appointmentId, 'CONFIRMED')}>confirm</button>
+                        <button className="reject" onClick={()=>checkAppointment(app.appointmentId, 'REJECTED')}>reject</button>
                       </td>
                     }
                   </tr>

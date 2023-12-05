@@ -4,13 +4,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #225;
+    background-color: #FFFFFF;
     position: relative;
     top: 4rem;
+    border: solid #E0E0E0 2px;
+    border-radius: 0.6rem;
+    box-shadow: 1px 1px 3px rgba(50, 50, 50, 200)
 }
 
 .app_wrapper h3{
-    color: white;
+    color: #333;
 }
 
 .doctor_info{
@@ -31,7 +34,7 @@
     flex-direction: row;
 }
 .detail p{
-    color: #ccc;
+    color: #000;
     font-size: 17px;
     margin-right: 1rem;
 }
@@ -50,17 +53,21 @@
 }
 .app_element label{
     margin-top: 0.3rem;
-    color: white;
+    color: #333;
     font-size: 18px;
 }
 .app_element input{
     width: 14.5rem;
     height: 2.7rem;
     font-size: 18px;
-    background-color: #dde;
+    background-color: #EAEAEA;
     border: none;
     border-radius: 10px;
     padding-left: 0.5rem;
+}
+.app_element input:focus{
+    outline: none;
+    border: solid #999 1px;
 }
 
 .description{
@@ -68,28 +75,32 @@
     height: 6.9rem;
     font-size: 18px;
     resize: none;
+    border: none;
     border-radius: 10px;
     border-width: 2px;
-    border-color: green;
-    background-color: #dde;
+    background-color: #EAEAEA;
     padding-top: 0.1rem;
     padding-left: 0.3rem;
+}
+.description:focus{
+    outline: none;
+    border: solid #999 1px;
 }
 
 .app_btn{
     margin-top: 1.5rem;
-    width: 20rem;
+    width: 14rem;
     height: 3rem;
-    background-color: #2a2;
+    background-color: #36A2EB ;
+    border: none;
     border-radius: 20px;
     border-width: 2px;
-    border-color: #2a2;
-    color: white;
+    color: #333;
     font-size: 18px;
 }
 .app_btn:hover{
-    background-color: #2c2;
-    transform: scale(1.1);
+    background-color: #4DA1FF ;
+    color: #000;
     cursor: pointer;
 }
 
@@ -103,12 +114,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #fff;
     padding: 1rem;
-    border-radius: 15px;
+    border-radius: 8px;
     z-index: 2;
-    box-shadow: 10px 10px 0px 1px rgb(4, 0, 0) inset;
+    background-color: #fff;
+    box-shadow: 3px 3px 8px 2px rgb(50, 50, 50, 100);
 }
+
 .server_msg p{
     text-align: center;
     font-size: 22px;
@@ -121,13 +133,13 @@
     height: 2rem;
     border: none;
     border-radius: 7px;
-    background-color: #00f;
-    color: white;
+    background-color: #36A2EB;
+    color: #333;
 }
 .server_msg button:hover{
-    background-color: #07f;
+    background-color: #4DA1FF;
     cursor: pointer;
-    transform: scale(1.05);
+    color: #000;
 }
 
 .app_warning{
@@ -141,7 +153,7 @@
     height: 2rem;
     border: none;
     border-radius: 7px;
-    background-color: #00f;
-    color: white;
+    background-color: #36A2EB;
+    color: #333;
     font-size: 15px;
 }

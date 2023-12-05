@@ -1,14 +1,15 @@
 .record_wrapper{
-    background-color: #225;
-    border-radius: 20px;
+    background-color: #F5F5F5;
+    border-radius: 10px;
     width: 50%;
     margin-left: 50%;
     transform: translateX(-50%);
     position: relative;
-    top: 4rem;
+    top: 5.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: 1px 1px 3px 0px #333;
 }
 
 .record_wrapper div{
@@ -18,26 +19,26 @@
     width: 80%;
     height: 3.5rem;
     position: relative;
-    margin-top: 0.2rem;
+    margin-top: 0.25rem;
 }
 
 .record_wrapper div label{
     position: absolute;
     left: 0;
     font-size: 20px;
-    color: white;
+    color: #333;
 }
 
 .record_wrapper div input{
     width: 22rem;
-    height: 3.2rem;
+    height: 2.5rem;
     position: absolute;
     right: 0;
     font-size: 18px;
     outline: none;
     border-radius: 10px;
-    border-color: blue;
-    border-width: 0.15rem;   
+    border-color: #5AA;
+    border-width: 0.1rem;   
     padding-left: 0.4rem;
 }
 
@@ -49,25 +50,26 @@
     font-size: 18px;
     outline: none;
     resize: none;
-    border: solid blue;
+    border: solid #5AA;
     border-radius: 10px;
+    border-width: 0.1rem;
     margin-top: 1.5rem;
     padding: 0.1rem 0.1rem 0.1rem 0.3rem;
 }
 
 .record_wrapper button{
-    width: 25rem;
+    width: 12rem;
     height: 3rem;
     margin-top: 3rem;
     margin-bottom: 1rem;
     border: none;
     border-radius: 15px;
-    background-color: blue;
-    color: white;
+    background-color: #36A2EB;
+    color: #333;
     font-size: 20px;
 }
 .record_wrapper button:hover{
-    background-color: #44a;
+    background-color: #4DA1FF;
+    color: #000;
     cursor: pointer;
-    transform: scale(1.1);
 }

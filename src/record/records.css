@@ -9,17 +9,21 @@
 
 .records_wrapper table{
     width: 95%;
+    text-align: center;
+    font-size: 20px;
+    border-collapse: collapse;
+    box-shadow: 1px 1px 3px 0px #455;
 }
 
 .records_wrapper thead tr{
-    background-color: #bbb;
+    background-color: #2C5E70;
+    color: #fff;
+    height: 3rem;
 }
 
-.records_wrapper th{
-    border: solid 1px #22a;
+tbody tr:nth-child(even){
+    background-color: #F5F5F5;
 }
-
-.records_wrapper tbody td{
-    font-size: 17px;
-    border: dashed 0.1px #22a;
+tbody tr:nth-child(odd){
+    background-color: #FFFFFF;
 }

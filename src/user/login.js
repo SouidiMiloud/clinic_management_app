@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import './login.css'
-import ServerDown from "../serverDown";
+import fetchData from "../api";
 
 
 const Login = ()=>{
@@ -13,22 +13,12 @@ const Login = ()=>{
 
     const authenticateUser = (event)=>{
         event.preventDefault();
-        fetch('http://localhost:8090/authentication/login', {
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify(credentials)
-        })
-        .then(response=>{
-          if(response.status === 200){
-            return response.json();
-          }
-        })
+        fetchData('/authentication/login', 'POST', credentials)
         .then(data=>{
           localStorage.setItem('jwt', data.token);
-          localStorage.setItem('name', data.user.firstName);
+          localStorage.setItem('name', data.user.firstName + ' ' + data.user.lastName);
           localStorage.setItem('username', credentials.username);
+          
           window.location.href='/';
         });
     }
@@ -45,7 +35,7 @@ const Login = ()=>{
       <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
         <div className="log_wrapper">
         <form onSubmit={authenticateUser}>
-          <h2 className="log_h2">enter your credentials</h2>
+          <h2 className="log_h2">Enter your credentials</h2>
           <div style={{marginTop: '5rem'}}>
           <div className="log_inputField">
             <label>username</label>
@@ -56,9 +46,8 @@ const Login = ()=>{
             <label>password</label>
             <input type="password" name="password" value={credentials.password} onChange={updateCredentials} placeholder="password"/>
           </div>
+          <button type="submit">login</button>
           </div>
-          
-          <button className="log_submit_btn" type="submit">login</button>
           
           <br/>
           <div className="forgot_pwd">

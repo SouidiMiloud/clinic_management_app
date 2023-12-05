@@ -1,6 +1,5 @@
 body{
-    background-image: url('../public/images/clinic_background.jpeg');
-    background-size: cover;
+    background-color: #fff;
 }
 
 .home_wrapper{
@@ -14,16 +13,20 @@ body{
 
 .home_wrapper h1{
     text-align: center;
-    color: #226;
-    width: 33rem;
+    font-size:40px;
+    color: #333;
+    width: 32.5rem;
+    font-family: 'Playfair Display', serif;
 }
 
 .home_wrapper div{
     width: 25%;
-    margin-top: 10rem;
+    margin-top: 7rem;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    position: fixed;
+    bottom: 6rem;
 }
 
 .home_wrapper button{
@@ -31,12 +34,14 @@ body{
     height: 2.5rem;
     border: none;
     border-radius: 10px;
-    background-color: #00f;
-    color: white;
-    font-size: 18px;
+    background-color: #36A2EB;
+    color: #333;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 20px;
 }
 .home_wrapper button:hover{
     cursor: pointer;
-    background-color: #22a;
-    transform: scale(1.15);
+    background-color: #4DA1FF;
+    color: #000;
 }

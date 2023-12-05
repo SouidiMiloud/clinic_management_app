@@ -33,6 +33,12 @@ const Appointment = ({username, notificationsNum, setNotificationsNum})=>{
         [name]: value
       }));
     }
+
+    const confirmAction = ()=>{
+      setServerMessage('');
+      window.location.reload();
+    }
+
     const updateDuration = (event)=>{
       let value = event.target.value;
       const character = value.charAt(value.length - 1);
@@ -81,7 +87,7 @@ const Appointment = ({username, notificationsNum, setNotificationsNum})=>{
           <Navbar filter={false} notificationsNum={notificationsNum}/>
           <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
             <div className="app_wrapper">
-              <h3>take appointment with your doctor</h3>
+              <h3>Schedule an appointment with your doctor</h3>
               <div className="doctor_info">
                 <img src={`images/${doctor.profileImagePath ? doctor.profileImagePath : 'default_user.png'}`}/>
                 <div>
@@ -112,17 +118,17 @@ const Appointment = ({username, notificationsNum, setNotificationsNum})=>{
                   <textarea className="description" name="description" value={appointment.description} onChange={updateAppointment}/>
                 </div>
               </div>
-              <button className="app_btn" onClick={takeAppointment}>take appointment</button>
+              <button className="app_btn" onClick={takeAppointment}>Schedule Appointment</button>
             </div>
 
             {serverMessage &&
               <div className="server_msg">
                 {req_status === 201 &&
-                  <p style={{color: '#272'}}>{serverMessage}</p>
+                  <p style={{color: '#155724'}}>{serverMessage}</p>
                 }
-                {req_status === 200 &&
+                {req_status === 202 &&
                   <div>
-                    <p style={{color: '#aa0'}}>{serverMessage}</p>
+                    <p style={{color: '#856404'}}>{serverMessage}</p>
                     <div className="app_warning">
                       <button onClick={saveAppointment}>confirm anyway</button>
                       <button onClick={()=>setServerMessage('')}>new appointment</button>
@@ -130,10 +136,10 @@ const Appointment = ({username, notificationsNum, setNotificationsNum})=>{
                   </div>
                 }
                 {req_status === 400 &&
-                  <p style={{color: '#d22'}}>{`${serverMessage}, try again`}</p>
+                  <p style={{color: '#721C24'}}>{`${serverMessage}, try again`}</p>
                 }
-                {req_status !== 200 &&
-                  <button onClick={()=>setServerMessage('')}>OK</button>
+                {req_status !== 202 &&
+                  <button onClick={()=>confirmAction()}>OK</button>
                 }
                 </div>
             }

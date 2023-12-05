@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import './registration.css'
-import ServerDown from "../serverDown";
-
 
 const Registration = ()=>{
 
@@ -52,7 +50,7 @@ const Registration = ()=>{
       <div style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         <form onSubmit={registerUser}>
           <div className="reg_wrapper">
-          <h2>create your account here</h2>
+          <h2>Create your account here</h2>
             <div style={{marginTop: '4rem'}}>
               <div className="reg_inputField">
                 <label>first name</label>
