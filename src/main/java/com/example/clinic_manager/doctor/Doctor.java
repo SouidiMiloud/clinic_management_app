@@ -3,7 +3,6 @@ package com.example.clinic_manager.doctor;
 import com.example.clinic_manager.user.ClinicUser;
 import com.example.clinic_manager.user.ClinicUserRole;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;

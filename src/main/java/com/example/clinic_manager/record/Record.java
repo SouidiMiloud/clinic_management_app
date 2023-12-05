@@ -1,12 +1,11 @@
 package com.example.clinic_manager.record;
 
+import com.example.clinic_manager.doctor.Doctor;
+import com.example.clinic_manager.user.ClinicUser;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
@@ -17,8 +16,12 @@ public class Record {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private Long patientId;
-    private Long doctorId;
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private ClinicUser patient;
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
     private LocalDateTime dateOfVisit;
     private String disease;
     private String tests;
@@ -26,10 +29,11 @@ public class Record {
     private String medications;
     private String details;
 
-    public Record(Long patientId, Long doctorId, LocalDateTime dateOfVisit, String disease,
+    public Record(ClinicUser patient, Doctor doctor, LocalDateTime dateOfVisit, String disease,
                   String tests, String results, String medications, String details) {
-        this.patientId = patientId;
-        this.doctorId = doctorId;
+
+        this.patient = patient;
+        this.doctor = doctor;
         this.dateOfVisit = dateOfVisit;
         this.disease = disease;
         this.tests = tests;

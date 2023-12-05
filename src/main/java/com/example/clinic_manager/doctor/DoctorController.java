@@ -1,16 +1,14 @@
 package com.example.clinic_manager.doctor;
 
-import com.example.clinic_manager.user.ClinicUser;
+import com.example.clinic_manager.appointment.AppointmentCheck;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -35,8 +33,8 @@ public class DoctorController {
     }
 
     @PostMapping("/checkAppointment")
-    public HttpStatus checkAppointment(@RequestBody Map<String, String> request){
+    public HttpStatus checkAppointment(@RequestBody AppointmentCheck check){
 
-        return doctorService.checkAppointment(request);
+        return doctorService.checkAppointment(check);
     }
 }

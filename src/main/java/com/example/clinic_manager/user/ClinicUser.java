@@ -26,12 +26,11 @@ public class ClinicUser implements UserDetails {
     private String phone;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+    @Enumerated(EnumType.STRING)
     private ClinicUserRole role;
     private String profileImagePath;
     private Integer appointmentsNotifNum;
     private Integer messagesNum;
-    private Integer notificationsNum;
-
 
     public ClinicUser(String firstName, String lastName, String username, String phone, String password, ClinicUserRole role, String profileImagePath) {
         this.firstName = firstName;
@@ -43,7 +42,6 @@ public class ClinicUser implements UserDetails {
         this.profileImagePath = profileImagePath;
         appointmentsNotifNum = 0;
         messagesNum = 0;
-        notificationsNum = 0;
     }
 
     @Override

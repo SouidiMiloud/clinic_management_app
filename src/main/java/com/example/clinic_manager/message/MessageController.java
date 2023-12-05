@@ -7,7 +7,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -19,19 +18,19 @@ public class MessageController {
 
 
     @PostMapping("/sendMessage")
-    public ResponseEntity<String> sendMessage(@AuthenticationPrincipal ClinicUser user, @RequestBody Map<String, String> message){
+    public ResponseEntity<String> sendMessage(@AuthenticationPrincipal ClinicUser user, @RequestBody MessageRequest request){
 
-        return messageService.saveMessage(user, message);
+        return messageService.saveMessage(user, request);
     }
 
     @GetMapping("/getConversations")
-    public ResponseEntity<List<ConversationResponse>> getConversations(@AuthenticationPrincipal ClinicUser user){
+    public ResponseEntity<List<ConversationResponse>> getConversations(@AuthenticationPrincipal ClinicUser user, @RequestParam String usernameSearch){
 
-        return messageService.getConversations(user);
+        return messageService.getConversations(user, usernameSearch);
     }
 
     @GetMapping("/getMessages")
-    public ResponseEntity<Map<String, Object>> getMessages(@AuthenticationPrincipal ClinicUser user, @RequestParam String participantUsername){
+    public ResponseEntity<MessagesResp> getMessages(@AuthenticationPrincipal ClinicUser user, @RequestParam String participantUsername){
 
         return messageService.getMessages(user.getId(), participantUsername);
     }

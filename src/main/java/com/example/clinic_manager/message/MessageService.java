@@ -21,60 +21,53 @@ public class MessageService {
     private MessageRepo messageRepo;
     private ConversationRepo conversationRepo;
     private ClinicUserRepo clinicUserRepo;
-    private SimpMessagingTemplate messagingTemplate;
     private UserService userService;
 
 
-    public ResponseEntity<String> saveMessage(ClinicUser user, Map<String, String> message_req) {
+    public ResponseEntity<String> saveMessage(ClinicUser user, MessageRequest request) {
 
-        String content = message_req.get("message");
-        if(content.isEmpty())
+        if(request.getMessage().isEmpty())
             return ResponseEntity.ok().body("empty message");
-        Conversation conversation;
-        LocalDateTime now = LocalDateTime.now();
-        ClinicUser participant = clinicUserRepo.findByUsername(message_req.get("username")).get();
-        Optional<Conversation> conversationOpt = conversationRepo.getConversation(user.getId(), participant.getId());
-        if(conversationOpt.isPresent())
-            conversation = conversationOpt.get();
-        else
-            conversation = new Conversation(null, null, user.getId(), participant.getId(), 0, 0);
-        conversation.setLatestMessage(content);
-        conversation.setLatestMessageTime(now);
-        if(conversation.getUser1Id().equals(participant.getId()))
-            conversation.setUnread1(conversation.getUnread1() + 1);
-        else conversation.setUnread2(conversation.getUnread2() + 1);
-        conversationRepo.save(conversation);
-        Message message = new Message(user.getId(), participant.getId(), conversation.getId(), now, content);
-        messageRepo.save(message);
+        ClinicUser participant = clinicUserRepo.findByUsername(request.getUsername()).get();
+        Optional<Conversation> conversationOpt = conversationRepo.getConversation(user, participant);
+        Conversation conversation = conversationOpt.orElseGet(() ->
+                new Conversation(null, null, user, participant, 0, 0));
 
+        updateConversation(conversation, participant, request.getMessage());
+        Message message = new Message(user.getId(), participant.getId(), conversation, LocalDateTime.now(), request.getMessage());
+        messageRepo.save(message);
         sendConversationNotif(participant);
         return ResponseEntity.ok().body("message saved successfully");
     }
+    private void updateConversation(Conversation conversation, ClinicUser receiver, String msgContent){
+        conversation.setLatestMessage(msgContent);
+        conversation.setLatestMessageTime(LocalDateTime.now());
+        if(conversation.getParticipant1().equals(receiver))
+            conversation.setUnread1(conversation.getUnread1() + 1);
+        else
+            conversation.setUnread2(conversation.getUnread2() + 1);
+        conversationRepo.save(conversation);
+    }
     private void sendConversationNotif(ClinicUser participant){
 
-        int unreadConvNum = conversationRepo.getUnreadConvNum(participant.getId());
-        participant.setMessagesNum(unreadConvNum);
-        participant.setNotificationsNum(participant.getNotificationsNum() + 1);
-        clinicUserRepo.save(participant);
-        userService.sendNotifs(participant.getId());
+        int unreadConvNum = conversationRepo.getUnreadConvNum(participant);
+        userService.updateNotifications(participant, -1, unreadConvNum);
     }
 
-    public ResponseEntity<Map<String, Object>> getMessages(Long userId, String participantUsername) {
+    public ResponseEntity<MessagesResp> getMessages(Long userId, String participantUsername) {
 
         ClinicUser participant = clinicUserRepo.findByUsername(participantUsername).get();
-        Optional<Conversation> conversation = conversationRepo.getConversation(userId, participant.getId());
-        Map<String, Object> map = new HashMap<>();
-        map.put("userId", userId);
-        map.put("participant", new UserMessageResponse(participant.getFirstName() + ' ' + participant.getLastName(), participant.getProfileImagePath()));
-        if(conversation.isEmpty()) {
-            map.put("messages", List.of());
-            return ResponseEntity.ok().body(map);
-        }
-        List<Message> messages = messageRepo.getMessages(conversation.get().getId());
+        Optional<Conversation> conversation = conversationRepo.getConversation(clinicUserRepo.findById(userId).get(), participant);
+        MessagesResp response = new MessagesResp(userId, new UserMessageResponse(participant.getFirstName() +
+                ' ' + participant.getLastName(), participant.getProfileImagePath()));
+        if(conversation.isEmpty())
+            return ResponseEntity.ok().body(response);
 
-        map.put("messages", buildMessageResponses(messages));
+        List<Message> messages = messageRepo.getMessages(conversation.get());
+
+        response.setMessages(buildMessageResponses(messages));
         updateUserUnreadMessages(userId, conversation.get());
-        return ResponseEntity.ok().body(map);
+        return ResponseEntity.ok().body(response);
     }
     private List<MessageResponse> buildMessageResponses(List<Message> messages){
         List<MessageResponse> response = new ArrayList<>();
@@ -89,35 +82,25 @@ public class MessageService {
     private void updateUserUnreadMessages(Long userId, Conversation conversation){
 
         ClinicUser user = clinicUserRepo.findById(userId).get();
-        if(userId.equals(conversation.getUser1Id())) {
-            user.setNotificationsNum(user.getNotificationsNum() - conversation.getUnread1());
+        if(userId.equals(conversation.getParticipant1().getId()))
             conversation.setUnread1(0);
-        }
-        else {
-            user.setNotificationsNum(user.getNotificationsNum() - conversation.getUnread2());
+        else
             conversation.setUnread2(0);
-        }
         conversationRepo.save(conversation);
-        int unreadConvNum = conversationRepo.getUnreadConvNum(userId);
-        user.setMessagesNum(unreadConvNum);
-        clinicUserRepo.save(user);
-        userService.sendNotifs(userId);
+        int unreadConvNum = conversationRepo.getUnreadConvNum(user);
+        userService.updateNotifications(user, -1, unreadConvNum);
     }
 
-    public ResponseEntity<List<ConversationResponse>> getConversations(ClinicUser user) {
+    public ResponseEntity<List<ConversationResponse>> getConversations(ClinicUser user, String search) {
 
-        List<Conversation> conversations = conversationRepo.getConversations(user.getId());
+        List<Conversation> conversations = conversationRepo.getConversations(user, search);
         List<ConversationResponse> response = new ArrayList<>();
-        ClinicUser participant;
-        Long participantId;
-        String name;
-        Integer unreadMessages;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         for(Conversation c : conversations){
-            participantId = (c.getUser1Id().equals(user.getId()) ? c.getUser2Id() : c.getUser1Id());
-            unreadMessages = (c.getUser1Id().equals(user.getId()) ? c.getUnread1() : c.getUnread2());
-            participant = clinicUserRepo.findById(participantId).get();
-            name = participant.getFirstName() + ' ' + participant.getLastName();
+            Long participantId = (c.getParticipant1().equals(user) ? c.getParticipant2().getId() : c.getParticipant1().getId());
+            Integer unreadMessages = (c.getParticipant1().equals(user) ? c.getUnread1() : c.getUnread2());
+            ClinicUser participant = clinicUserRepo.findById(participantId).get();
+            String name = participant.getFirstName() + ' ' + participant.getLastName();
             response.add(new ConversationResponse(participant.getUsername(), name, participant.getProfileImagePath(),
                     unreadMessages, c.getLatestMessageTime().format(formatter), c.getLatestMessage()));
         }

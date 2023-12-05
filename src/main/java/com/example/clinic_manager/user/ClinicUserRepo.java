@@ -13,9 +13,9 @@ public interface ClinicUserRepo extends JpaRepository<ClinicUser, Long> {
 
     Optional<ClinicUser> findByUsername(String username);
 
-    @Query("select d from ClinicUser d where d.role=?1")
-    List<Doctor> findUsersByRole(ClinicUserRole role);
-
-    @Query("select d from Doctor d where d.role=?1 and d.specialty=?2")
-    List<Doctor> findDoctorsBySpecialty(ClinicUserRole role, Specialty specialty);
+    @Query("SELECT d FROM ClinicUser d WHERE d.role='DOCTOR'")
+    List<Doctor> getDoctors();
+    
+    @Query("SELECT d FROM Doctor d WHERE d.role='DOCTOR' AND d.specialty=?1")
+    List<Doctor> findDoctorsBySpecialty(Specialty specialty);
 }

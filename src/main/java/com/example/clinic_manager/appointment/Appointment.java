@@ -1,12 +1,11 @@
 package com.example.clinic_manager.appointment;
 
+import com.example.clinic_manager.doctor.Doctor;
+import com.example.clinic_manager.user.ClinicUser;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
@@ -18,16 +17,20 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private Long patientId;
-    private Long doctorId;
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private ClinicUser patient;
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private ClinicUser doctor;
     private LocalDateTime start;
     private Integer duration;
     private Status status;
     private String description;
 
-    public Appointment(Long patientId, Long doctorId, LocalDateTime start, int duration, Status status, String description) {
-        this.patientId = patientId;
-        this.doctorId = doctorId;
+    public Appointment(ClinicUser patient, Doctor doctor, LocalDateTime start, int duration, Status status, String description) {
+        this.patient = patient;
+        this.doctor = doctor;
         this.start = start;
         this.duration = duration;
         this.status = status;

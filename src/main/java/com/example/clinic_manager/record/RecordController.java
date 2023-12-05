@@ -25,7 +25,7 @@ public class RecordController {
     }
 
     @GetMapping("/getRecords")
-    public ResponseEntity<Map<String, Object>> getRecords(@AuthenticationPrincipal ClinicUser user){
+    public ResponseEntity<RecordsResponse> getRecords(@AuthenticationPrincipal ClinicUser user){
 
         return recordService.getRecords(user);
     }

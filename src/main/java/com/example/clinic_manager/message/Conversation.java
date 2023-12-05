@@ -1,12 +1,10 @@
 package com.example.clinic_manager.message;
 
+import com.example.clinic_manager.user.ClinicUser;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
@@ -19,16 +17,19 @@ public class Conversation {
     private Long id;
     private LocalDateTime latestMessageTime;
     private String latestMessage;
-    private Long user1Id;
-    private Long user2Id;
+    @ManyToOne
+    private ClinicUser participant1;
+    @ManyToOne
+    private ClinicUser participant2;
     private Integer unread1;
     private Integer unread2;
 
-    public Conversation(LocalDateTime latestMessageTime, String latestMessage, Long user1Id, Long user2Id, Integer unread1, Integer unread2) {
+    public Conversation(LocalDateTime latestMessageTime, String latestMessage, ClinicUser participant1,
+                        ClinicUser participant2, Integer unread1, Integer unread2) {
         this.latestMessageTime = latestMessageTime;
         this.latestMessage = latestMessage;
-        this.user1Id = user1Id;
-        this.user2Id = user2Id;
+        this.participant1 = participant1;
+        this.participant2 = participant2;
         this.unread1 = unread1;
         this.unread2 = unread2;
     }

@@ -1,5 +1,6 @@
 package com.example.clinic_manager.message;
 
+import com.example.clinic_manager.user.ClinicUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,12 +11,22 @@ import java.util.Optional;
 public interface ConversationRepo extends JpaRepository<Conversation, Long> {
 
 
-    @Query("select c from Conversation c where ?1 in (c.user1Id, c.user2Id) and ?2 in (c.user1Id, c.user2Id)")
-    Optional<Conversation> getConversation(Long user1Id, Long user2Id);
+    @Query("SELECT c FROM Conversation c" +
+            " WHERE ?1 IN (c.participant1, c.participant2)" +
+            "AND ?2 IN (c.participant1, c.participant2)")
+    Optional<Conversation> getConversation(ClinicUser user1, ClinicUser user2);
 
-    @Query("select count(c) from Conversation c where (c.user1Id=?1 and c.unread1 > 0) or (c.user2Id=?1 and c.unread2 > 0)")
-    int getUnreadConvNum(Long userId);
+    @Query("SELECT COUNT(c) FROM Conversation c" +
+            " WHERE (c.participant1=?1 AND c.unread1 > 0)" +
+            "OR (c.participant2=?1 AND c.unread2 > 0)")
+    int getUnreadConvNum(ClinicUser user);
 
-    @Query("select c from Conversation c where ?1 in (c.user1Id, c.user2Id) order by c.latestMessageTime desc")
-    List<Conversation> getConversations(Long userId);
+    @Query("SELECT c FROM Conversation c " +
+            "WHERE (c.participant1 = ?1 AND (c.participant2.firstName LIKE CONCAT('%', ?2, '%')" +
+                "OR c.participant2.lastName LIKE CONCAT('%', ?2, '%')))" +
+            " OR (c.participant2 = ?1 AND (c.participant1.firstName LIKE CONCAT('%', ?2, '%')" +
+                "OR c.participant1.lastName LIKE CONCAT('%', ?2, '%')))" +
+            " ORDER BY c.latestMessageTime DESC")
+    List<Conversation> getConversations(ClinicUser user, String search);
+
 }

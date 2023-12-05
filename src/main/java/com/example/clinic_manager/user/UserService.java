@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -26,58 +27,52 @@ public class UserService {
     private AppointmentRepo appointmentRepo;
     private SimpMessagingTemplate messagingTemplate;
 
+
     public ResponseEntity<String> register(String fName, String lName, String username, String phone,
                                            String pwd, String confirmPwd, MultipartFile image) throws IOException {
 
         if (!pwd.equals(confirmPwd))
             return ResponseEntity.badRequest().body("passwords don't match");
+        String uniqueFileName = getUniqueFileName(image);
 
+        pwd = passwordEncoder.encode(pwd);
+        ClinicUser user = new ClinicUser(fName, lName, username, phone, pwd, ClinicUserRole.PATIENT, uniqueFileName);
+        userRepo.save(user);
+        return ResponseEntity.ok().body("saved successfully");
+    }
+    public String getUniqueFileName(MultipartFile image) throws IOException{
         String uniqueFileName = "";
         if (image != null && !image.isEmpty()) {
             uniqueFileName = UUID.randomUUID().toString() + '_' + image.getOriginalFilename();
             File dest = new File("C:/Users/Electro Ragragui/Downloads/clinic_manager_react/public/images/" + uniqueFileName);
             image.transferTo(dest);
         }
-        pwd = passwordEncoder.encode(pwd);
-        ClinicUser user = new ClinicUser(fName, lName, username, phone, pwd, ClinicUserRole.PATIENT, uniqueFileName);
-        userRepo.save(user);
-        return ResponseEntity.ok().body("saved successfully");
+        return uniqueFileName;
     }
     public ResponseEntity<String> takeAppointment(ClinicUser user, AppointmentRequest request) {
 
-        Optional<ClinicUser> doctor_ = userRepo.findByUsername(request.getDoctorUsername());
-        if (doctor_.isEmpty())
+        Optional<ClinicUser> doctorOpt = userRepo.findByUsername(request.getDoctorUsername());
+        if (doctorOpt.isEmpty())
             return ResponseEntity.badRequest().body("doctor not found");
-        Doctor doctor = (Doctor) doctor_.get();
-        if(request.getStart().isBefore(LocalDateTime.now()))
-            return ResponseEntity.badRequest().body("the date is not in the future");
-
-        if(request.getStart().toLocalTime().isBefore(doctor.getWorkStart()) || request.getStart().plusMinutes(request.getDuration()).toLocalTime().isAfter(doctor.getWorkEnd()))
-            return ResponseEntity.badRequest().body("the doctor works from " + doctor.getWorkStart().toString() + " to " + doctor.getWorkEnd().toString());
-
-        if(!isValidAppointment(doctor.getId(), request.getStart(), request.getStart().plusMinutes(request.getDuration()), Status.CONFIRMED))
-            return ResponseEntity.badRequest().body("this appointment is already taken");
-
-        if(!isValidAppointment(doctor.getId(), request.getStart(), request.getStart().plusMinutes(request.getDuration()), Status.UNCHECKED))
-            return ResponseEntity.ok().body("this appointment is already taken but not confirmed yet");
-
-        return saveAppointment(user, request);
+        Doctor doctor = (Doctor) doctorOpt.get();
+        ResponseEntity<String> response = validateAppointment(doctor, request.getStart(), request.getDuration());
+        if(response.getStatusCode() == HttpStatus.OK)
+            return saveAppointment(user, request);
+        return response;
     }
     public ResponseEntity<String> saveAppointment(ClinicUser user, AppointmentRequest request){
+        Optional<ClinicUser> doctorOpt = userRepo.findByUsername(request.getDoctorUsername());
+        if(doctorOpt.isEmpty())
+            return ResponseEntity.badRequest().body("Doctor not found");
+        Doctor doctor = (Doctor) doctorOpt.get();
+        updateNotifications(doctor, doctor.getAppointmentsNotifNum() + 1, -1);
 
-        Optional<ClinicUser> doctor_ = userRepo.findByUsername(request.getDoctorUsername());
-        Doctor doctor = (Doctor) doctor_.get();
-
-        doctor.setAppointmentsNotifNum(doctor.getAppointmentsNotifNum() + 1);
-        doctor.setNotificationsNum(doctor.getNotificationsNum() + 1);
-        userRepo.save(doctor);
-        appointmentRepo.save(new Appointment(user.getId(), doctor.getId(), request.getStart(), request.getDuration(), Status.UNCHECKED, request.getDescription()));
-        sendNotifs(doctor.getId());
+        appointmentRepo.save(new Appointment(user, doctor, request.getStart(), request.getDuration(), Status.UNCHECKED, request.getDescription()));
         return ResponseEntity.status(HttpStatus.CREATED).body("appointment saved and sent to the doctor successfully");
     }
-    public Boolean isValidAppointment(Long doctorId, LocalDateTime start, LocalDateTime end, Status status){
-
-        List<Appointment> appointments = appointmentRepo.getAppointmentsByStatus(doctorId, status);
+    private Boolean isAppointmentAvailable(Doctor doctor, LocalDateTime start, int duration, Status status){
+        LocalDateTime end = start.plusMinutes(duration);
+        List<Appointment> appointments = appointmentRepo.getAppointmentsByStatus(doctor, status);
         for(Appointment a : appointments){
             if(start.isEqual(a.getStart()) || start.isEqual(a.getStart().plusMinutes(a.getDuration())) ||
                end.isEqual(a.getStart()) || end.isEqual(a.getStart().plusMinutes(a.getDuration())))
@@ -88,33 +83,57 @@ public class UserService {
         }
         return true;
     }
-    public ResponseEntity<Map<String, Object>> getAppointments(ClinicUser user, String searchedUsername) {
+    private ResponseEntity<String> validateAppointment(Doctor doctor, LocalDateTime start, int duration){
+        if(start.isBefore(LocalDateTime.now()))
+            return ResponseEntity.badRequest().body("The date is not in the future");
+        if(!isInWorkingHours(doctor, start, duration))
+            return ResponseEntity.badRequest().body("The doctor works from "
+                    + doctor.getWorkStart().toString() + " to " + doctor.getWorkEnd().toString());
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("role", user.getRole());
-        List<Appointment> appointments = appointmentRepo.getAppointmentsByUserId(user.getId(), searchedUsername);
-        List<AppointmentResponse> response = new ArrayList<>();
-        String name, start;
-        ClinicUser clinicUser;
-        for(Appointment a : appointments){
-            if(user.getRole().equals(ClinicUserRole.DOCTOR))
-                clinicUser = userRepo.findById(a.getPatientId()).get();
-            else clinicUser = userRepo.findById(a.getDoctorId()).get();
-            name = clinicUser.getFirstName() + ' ' + clinicUser.getLastName();
-            start = a.getStart().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
-            response.add(new AppointmentResponse(a.getId(), clinicUser.getUsername(), name,
-                    start, a.getDuration(), a.getDescription(), a.getStatus().toString()));
+        if(!isAppointmentAvailable(doctor, start, duration, Status.CONFIRMED))
+            return ResponseEntity.badRequest().body("This appointment is already taken");
+        if(!isAppointmentAvailable(doctor, start, duration, Status.UNCHECKED))
+            return ResponseEntity.accepted().body("This appointment is already taken but not confirmed yet");
+        return ResponseEntity.ok().body("");
+    }
+    private boolean isInWorkingHours(Doctor doctor, LocalDateTime start, int duration){
+        LocalTime startTime = start.toLocalTime();
+        LocalTime endTime = start.plusMinutes(duration).toLocalTime();
+        return startTime.isAfter(doctor.getWorkStart()) && endTime.isBefore(doctor.getWorkEnd());
+    }
+    public ResponseEntity<AppointmentsResponse> getAppointments(ClinicUser user, String searchedUsername) {
+
+        AppointmentsResponse response = new AppointmentsResponse(user.getRole());
+        List<Appointment> appointments = appointmentRepo.getAppointmentsByUserId(user, searchedUsername);
+        for(Appointment appointment : appointments){
+            response.getAppointments().add(processAppointment(user, appointment));
         }
-        map.put("appointments", response);
-        if(user.getRole().equals(ClinicUserRole.PATIENT)) {
-            user.setNotificationsNum(user.getNotificationsNum() - user.getAppointmentsNotifNum());
-            user.setAppointmentsNotifNum(0);
-            userRepo.save(user);
-            sendNotifs(user.getId());
-        }
-        return ResponseEntity.ok().body(map);
+        if(user.getRole().equals(ClinicUserRole.PATIENT))
+            updateNotifications(user, 0, -1);
+
+        return ResponseEntity.ok().body(response);
+    }
+    private AppointmentResp processAppointment(ClinicUser user, Appointment app){
+        ClinicUser participantUser;
+        if(user.getRole().equals(ClinicUserRole.DOCTOR))
+            participantUser = app.getPatient();
+        else
+            participantUser = app.getDoctor();
+        String name = participantUser.getFirstName() + ' ' + participantUser.getLastName();
+        String start = app.getStart().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
+
+        return new AppointmentResp(app.getId(), participantUser.getUsername(), name,
+                start, app.getDuration(), app.getDescription(), app.getStatus().toString());
     }
 
+    public void updateNotifications(ClinicUser user, int appointmentsNotif, int messagesNotif){
+        if(appointmentsNotif != -1)
+            user.setAppointmentsNotifNum(appointmentsNotif);
+        if(messagesNotif != -1)
+            user.setMessagesNum(messagesNotif);
+        sendNotifs(user.getId());
+        userRepo.save(user);
+    }
     public ResponseEntity<UserNotifResponse> getUserNotifs(ClinicUser user) {
 
         UserNotifResponse notifResponse = new UserNotifResponse(user.getRole().toString(), user.getUsername(),
@@ -123,12 +142,11 @@ public class UserService {
     }
 
     public void sendNotifs(Long userId){
-
         Optional<ClinicUser> userOpt = userRepo.findById(userId);
         if(userOpt.isEmpty())
             return;
         ClinicUser user = userOpt.get();
-
-        messagingTemplate.convertAndSendToUser(user.getUsername(), "/private", user.getNotificationsNum());
+        int notifsNum = user.getAppointmentsNotifNum() + user.getMessagesNum();
+        messagingTemplate.convertAndSendToUser(user.getUsername(), "/private", notifsNum);
     }
 }
